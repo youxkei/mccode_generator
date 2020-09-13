@@ -26,8 +26,6 @@ type size = {
 };
 
 
-let unsafeAddProp = ReactDOM.Style.unsafeAddProp;
-
 let bit = i => if (i > 0) 1 else 0;
 
 let byteArrayToBitArray = byteArray => {

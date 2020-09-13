@@ -14,7 +14,7 @@ type config = Config {
     strokeWidth: float,
     vertexWidthRatio: float,
     lineDistance: float,
-    color: string,
+    slideBridge: bool,
 };
 
 let layerBitsLength = (density, layerIndex) => {
@@ -69,7 +69,7 @@ let makeVertices = (n, Config{density, layerWidth, frameWidth, vertexWidthRatio}
 };
 
 
-let makeEdges = (n, bits, Config{density, layerWidth, strokeWidth, lineDistance}) => {
+let makeEdges = (n, bits, Config{density, layerWidth, strokeWidth, lineDistance, slideBridge}) => {
     let strokeWidthString = to_string(strokeWidth);
 
     let verticesNum = density * n;
@@ -129,7 +129,7 @@ let makeEdges = (n, bits, Config{density, layerWidth, strokeWidth, lineDistance}
                 }
             })->React.array;
 
-    let wholeDegree = -360.0 /. float_of_int(density)  *. float_of_int(n - 1);
+    let wholeDegree = if (slideBridge) { -360.0 /. float_of_int(density)  *. float_of_int(n - 1) } else { 0.0 };
     <g transform={{j|rotate($wholeDegree)|j}}>
         {edges}
     </g>
@@ -154,7 +154,7 @@ let makeLayer = (n, bits, Config{layerWidth, frameWidth, strokeWidth, vertexWidt
 
 [@react.component]
 let make = (~config, ~bits) => {
-    let Config{density, layerWidth, frameWidth, color} = config;
+    let Config{density, layerWidth, frameWidth} = config;
 
     // add version bits (4 bits) and mask pattern bits (4 bits)
     let bitsLength = bits->length + 8;
@@ -168,12 +168,15 @@ let make = (~config, ~bits) => {
     let width = to_string(radius *. 2.0);
 
     <svg
+        xmlns="http://www.w3.org/2000/svg"
+        id="mccode"
         width="100%"
         height="100%"
         viewBox={{j|-$radius -$radius $width $width|j}}
-        stroke={color}
-        fill={color}
+        stroke="black"
+        fill="black"
     >
+        <rect x={j|-$radius|j} y={j|-$radius|j} width={j|$width|j} height={j|$width|j} stroke="none" fill="white" />
         {
             range(0, numLayers)->map(i => {
                 let bits = if (i >= 2) {

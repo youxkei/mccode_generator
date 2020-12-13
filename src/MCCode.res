@@ -1,5 +1,5 @@
 open Belt.Array
-let to_string = Js.Float.toString
+let to_s = Js.Float.toString
 
 @bs.val external pi: float = "Math.PI"
 
@@ -69,9 +69,9 @@ let makeVertices = (n, Config({density, layerWidth, frameWidth, vertexWidthRatio
     let degree = 360.0 /. float_of_int(verticesNum) *. float_of_int(i)
 
     <path
-      d=j`M $sx,$sy A $radius,$radius 0,0,1 $ex,$ey`
-      transform=j`rotate($degree)`
-      strokeWidth=j`$frameWidth`
+      d=`M ${sx->to_s},${sy->to_s} A ${radius->to_s},${radius->to_s} 0,0,1 ${ex->to_s},${ey->to_s}`
+      transform=`rotate(${degree->to_s})`
+      strokeWidth=`${frameWidth->to_s}`
       fill="none"
     />
   })->React.array
@@ -82,7 +82,7 @@ let makeEdges = (
   bits,
   Config({density, layerWidth, strokeWidth, lineDistance, slideBridge}),
 ) => {
-  let strokeWidthString = to_string(strokeWidth)
+  let strokeWidthString = strokeWidth->to_s
 
   let verticesNum = density * n
   let radian = 2.0 *. pi /. float_of_int(verticesNum)
@@ -105,14 +105,14 @@ let makeEdges = (
     let indexAdjust = int_of_float(floor(float_of_int(i - 1) /. float_of_int(max(n - 1, 1))))
     let startIndex = i + indexAdjust
 
-    let bx = to_string(prevRadius *. cos(prevRadian *. float_of_int(i)))
-    let by = to_string(prevRadius *. sin(prevRadian *. float_of_int(i)))
-    let ex0 = to_string(radius *. cos(radian *. float_of_int(startIndex)))
-    let ey0 = to_string(radius *. sin(radian *. float_of_int(startIndex)))
-    let ex1 = to_string(radius *. cos(radian *. float_of_int(startIndex + 1)))
-    let ey1 = to_string(radius *. sin(radian *. float_of_int(startIndex + 1)))
-    let ex2 = to_string(radius *. cos(radian *. float_of_int(startIndex + 2)))
-    let ey2 = to_string(radius *. sin(radian *. float_of_int(startIndex + 2)))
+    let bx = (prevRadius *. cos(prevRadian *. float_of_int(i)))->to_s
+    let by =  (prevRadius *. sin(prevRadian *. float_of_int(i)))->to_s
+    let ex0 = (radius *. cos(radian *. float_of_int(startIndex)))->to_s
+    let ey0 = (radius *. sin(radian *. float_of_int(startIndex)))->to_s
+    let ex1 = (radius *. cos(radian *. float_of_int(startIndex + 1)))->to_s
+    let ey1 = (radius *. sin(radian *. float_of_int(startIndex + 1)))->to_s
+    let ex2 = (radius *. cos(radian *. float_of_int(startIndex + 2)))->to_s
+    let ey2 = (radius *. sin(radian *. float_of_int(startIndex + 2)))->to_s
 
     if i == 0 {
       <>
@@ -121,7 +121,7 @@ let makeEdges = (
           y1=by
           x2=ex1
           y2=ey1
-          transform=j`translate(0, -$yDelta)`
+          transform=`translate(0, -${yDelta->to_s})`
           strokeWidth=strokeWidthString
           fill="none"
         />
@@ -130,7 +130,7 @@ let makeEdges = (
           y1=by
           x2=ex1
           y2=ey1
-          transform=j`translate(0, $yDelta)`
+          transform=`translate(0, ${yDelta->to_s})`
           strokeWidth=strokeWidthString
           fill="none"
         />
@@ -156,7 +156,7 @@ let makeEdges = (
   } else {
     0.0
   }
-  <g transform=j`rotate($wholeDegree)`> edges </g>
+  <g transform=`rotate(${wholeDegree->to_s})`> edges </g>
 }
 
 let makeLayer = (
@@ -164,25 +164,25 @@ let makeLayer = (
   bits,
   Config({layerWidth, frameWidth, strokeWidth, vertexWidthRatio}) as config,
 ) => {
-  let strokeWidthString = to_string(strokeWidth)
+  let strokeWidthString = strokeWidth->to_s
 
   let radius = layerWidth *. float_of_int(n)
 
   if n == 0 {
-    <circle x="0" y="0" r={to_string(frameWidth /. 2.0 *. vertexWidthRatio)} stroke="none" />
+    <circle x="0" y="0" r={(frameWidth /. 2.0 *. vertexWidthRatio)->to_s} stroke="none" />
   } else {
     <>
       <circle
         cx="0"
         cy="0"
-        r={to_string(radius +. frameWidth /. 2.0)}
+        r={(radius +. frameWidth /. 2.0)->to_s}
         strokeWidth=strokeWidthString
         fill="none"
       />
       <circle
         cx="0"
         cy="0"
-        r={to_string(radius -. frameWidth /. 2.0)}
+        r={(radius -. frameWidth /. 2.0)->to_s}
         strokeWidth=strokeWidthString
         fill="none"
       />
@@ -206,17 +206,17 @@ let make = (~config, ~bits) => {
 
   let radius = layerWidth *. numLayers->float_of_int +. frameWidth
 
-  let width = to_string(radius *. 2.0)
+  let width = (radius *. 2.0)->to_s
 
   <svg
     xmlns="http://www.w3.org/2000/svg"
     id="mccode"
     width="100%"
     height="100%"
-    viewBox=j`-$radius -$radius $width $width`
+    viewBox=`-${radius->to_s} -${radius->to_s} ${width} ${width}`
     stroke="black"
     fill="black">
-    <rect x=j`-$radius` y=j`-$radius` width=width height=width stroke="none" fill="white" />
+    <rect x=`-${radius->to_s}` y=`-${radius->to_s}` width=width height=width stroke="none" fill="white" />
     {range(0, numLayers)->map(i => {
       let bits = if i >= 2 {
         let prevIndex = i - 1

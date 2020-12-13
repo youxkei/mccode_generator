@@ -98,14 +98,14 @@ module Application = {
         ~width="100%",
         ~height="100%",
         ~display="grid",
-        ~gridTemplateRows="75% 20% 5%",
-        ~gridTemplateColumns="50% 50%",
+        ~gridTemplateRows="5% 65% 5% 20% 5%",
+        ~gridTemplateColumns="10% 40% 40% 10%",
         (),
       )}>
-      <div style={ReactDOM.Style.make(~gridRow="1", ~gridColumn="span 2", ())}>
+      <div style={ReactDOM.Style.make(~gridRow="2", ~gridColumn="2 / span 2", ())}>
         <MCCode config bits />
       </div>
-      <div style={ReactDOM.Style.make(~gridRow="2", ~gridColumn="span 2", ())}>
+      <div style={ReactDOM.Style.make(~gridRow="4", ~gridColumn="span 4", ())}>
         <textarea
           value=data
           onChange=handleChange
@@ -119,10 +119,10 @@ module Application = {
           )}
         />
       </div>
-      <div style={ReactDOM.Style.make(~fontSize="3vh", ~gridRow="3", ~gridColumn="1", ())}>
+      <div style={ReactDOM.Style.make(~fontSize="3vh", ~gridRow="5", ~gridColumn="1 / span 2", ())}>
         <a id="save-svg" download="mccode.svg"> {React.string("Save as SVG")} </a>
       </div>
-      <div style={ReactDOM.Style.make(~fontSize="3vh", ~gridRow="3", ~gridColumn="2", ())}>
+      <div style={ReactDOM.Style.make(~fontSize="3vh", ~gridRow="5", ~gridColumn="3 / span 2", ())}>
         <a id="save-png" download="mccode.png"> {React.string("Save as PNG")} </a>
       </div>
     </div>
